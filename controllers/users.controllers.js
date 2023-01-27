@@ -34,4 +34,27 @@ module.exports = {
             }
         }
     },
+    getUsers: async (req, res) => {
+        try {
+            const filter = req.body;
+            const _data = await Users.aggregate([
+                {
+                    $project: {
+                        _id: 0,
+                        username: 1
+                    }
+                },
+                {
+                    $match: filter
+                }
+            ])
+
+            res.status(200).send({
+                message: "test",
+                result: _data
+            })
+        } catch (error) {
+            console.log(error);
+        }
+    },
 }
