@@ -1,32 +1,30 @@
 const db = require('../models');
 const Users = db.users;
-
 module.exports = {
     test(req, res) {
         res.status(200).send({
             message: "test"
         })
     },
-    registerUser: async(req, res) => {
-        const {username, password } = req.body;
+    registerUser: async (req, res) => {
+        const { username, password } = req.body;
+        const user = new Users({
+            username: username == undefined ? username : username.toLowerCase(),
+            password: password
+        });
         try {
-            const user = new Users({
-                username: username.toLowerCase(),
-                password: password
-            });
-            const saveUser = await user.save();
+            await user.save();
             res.status(200).json({
                 message: `User Berhasil Ditambahkan`,
                 type: 'SUCCESS',
             })
         } catch (error) {
-            console.log("error", error);
             const keyValue = error.keyValue;
-            if (keyValue == undefined) {
+            if (error.name === 'ValidationError') {
                 res.status(400).json({
-                    message: `Role Belum Ada`,
-                    type: 'ERROR'
-                })
+                    type: 'ERROR',
+                    message: error.message.replace(/Users validation failed: /, "")
+                });
             } else {
                 const key = Object.keys(keyValue);
                 res.status(400).json({
