@@ -11,6 +11,14 @@ module.exports = (mongoose) => {
             type: String,
             required: [true, 'Password tidak boleh kosong']
         },
+        name: { 
+            type: String,
+            required: true
+        },
+        balance: {
+            type: Number,
+            default: 0
+        },
         refreshToken: {
             type: String
         }
