@@ -7,10 +7,11 @@ module.exports = {
         })
     },
     registerUser: async (req, res) => {
-        const { username, password } = req.body;
+        const { username, password, name } = req.body;
         const user = new Users({
             username: username == undefined ? username : username.toLowerCase(),
-            password: password
+            password: password,
+            name: name
         });
         try {
             await user.save();
@@ -56,7 +57,7 @@ module.exports = {
             console.log(error);
         }
     },
-    deleteUserByID: async(req,res) => {
+    deleteUserByUsername: async(req,res) => {
         const data = req.body;
         if (!data.username) {
             res.status(400).json({
