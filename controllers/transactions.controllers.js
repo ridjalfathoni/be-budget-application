@@ -1,106 +1,77 @@
-const db = require('../models');
-const Transactions = db.transactions;
-const Users = db.users;
+const transactionsService = require('../services/transactions.services');
 
 module.exports = {
     addTransaction: async (req, res) => {
-        const { username, amount, type, category, description } = req.body;
-        const _user = await Users.findOne({ username: username });
-        const transactions = new Transactions({
-            user_id: _user._id,
-            amount: amount,
-            type: type,
-            category: category,
-            description: description
-        });
         try {
+            let date = req.body.date ? new Date(req.body.date) : Date.now()
+            const params = {
+                ...req.body,
+                created_at: date,
+                user_id: req.users?.user_id
+            }
+            const transactions = await transactionsService.create(params)
             await transactions.save();
-            res.status(200).json({
+            return res.status(200).json({
                 message: `Transactions Berhasil Ditambahkan`,
-                type: 'SUCCESS',
+                status: 'success',
             })
         } catch (error) {
-            if (error.name === 'ValidationError') {
-                res.status(400).json({
-                    type: 'ERROR',
-                    message: error.message.replace(/Transactions validation failed: /, "")
-                });
-            }
+           return res.status(500).json({
+                message: error
+            })
         }
     },
     getTransaction: async (req, res) => {
         try {
-            const filter = req.body;
-            const _data = await Transactions.aggregate([
-                {
-                    $lookup: {
-                        from: Users.collection.name,
-                        localField: "user_id",
-                        foreignField: "_id",
-                        as: "user",
-                        pipeline: [
-                            {
-                                $project: {
-                                    _id: 0,
-                                    username:1
-                                }
-                            },
-                        ]
-                    }
-                },
-                {
-                    $set: {
-                        username: { $arrayElemAt: ["$user.username", 0] },
-                    }
-                },
-                {
-                    $match: filter
-                },
-                {
-                    $project: {
-                        user: 0
-                    }
-                },
-            ])
-
-            res.status(200).send({
+            const params = {
+                ...req.users
+            }
+            const _data = await transactionsService.get(params)
+            return res.status(200).send({
                 result: _data
             })
         } catch (error) {
-            console.log(error);
+            return res.status(500).json({
+                message: error
+            })
         }
     },
     deleteTransactionByID: async (req, res) => {
-        const data = req.body;
-        
         try {
-            await Transactions.deleteMany({ _id: { $in: data } });
-            res.status(200).send({
-                message: "Transaction Berhasil dihapus",
+            const filter = {
+                _id: {
+                    $in: req.body.id
+                }
+            }
+            await transactionsService.delete(filter)
+            return res.status(200).send({
+                message: "Transaction deleted successfully.",
             })
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            return res.status(500).json({
+                message: error
+            })
         }
     },
     updateTransaction: async (req, res) => {
-        const data = req.body;
-        
         try {
-            const transaction = await Transactions.findOneAndUpdate({ _id: data.id },data,{ new: true })
-            const user = await Users.findOne({_id: transaction.user_id});
-            if (transaction.type === "income") {
-                user.balance -= transaction.amount;
-            } else if(transaction.type === "expense") {
-                user.balance += transaction.amount;
+            const params = {
+                filter: {
+                    _id: req.body.id
+                },
+                data: {
+                    ...req.body
+                }
             }
-            await user.save()
-            res.status(200).send({
-                type: 'SUCCESS',
-                message: "Transaction Berhasil diupdate",
-                data: transaction
+            const user = await transactionsService.update(params)
+            return res.status(200).send({
+                message: "Transaction updated successfully.",
+                data: user
             })
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            return res.status(500).json({
+                message: error
+            })
         }
     }
 }
