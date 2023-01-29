@@ -41,5 +41,24 @@ module.exports = {
                 message:error
             })
         }
+    },
+    deleteCategoryByID: async(req,res) => {
+        try {
+            const params = {
+                _id: {
+                    $in: req.body.id
+                }
+            }
+            await categoryService.delete(params);
+            return res.status(200).send({
+                message: "Category berhasil dihapus",
+                status: "success"
+            })
+        } catch (error) {
+            return res.status(500).json({
+                message: error,
+                status: "error"
+            })
+        }
     }
 }

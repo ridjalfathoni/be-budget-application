@@ -5,5 +5,6 @@ const Upload = require('../middleware/upload');
 module.exports = ((app,router) => {
     router.post('/addCategory',  [Middleware.verifyToken, Upload.uploadIcon.single('icon')], Category.addCategory);
     router.get('/getAllCategory',  [Middleware.verifyToken], Category.getAllCategory);
+    router.delete('/deleteCategoryByID',  [Middleware.verifyToken], Category.deleteCategoryByID);
     app.use("/api/category", router);
 })

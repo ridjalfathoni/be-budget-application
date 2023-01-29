@@ -48,6 +48,9 @@ module.exports = {
             }
         ])
     },
+    find: async (params) => {
+        return await Category.find(params)
+    },
     create: async (params) => {
         let _params = {
             ...params
@@ -58,5 +61,8 @@ module.exports = {
         _params.icon = iconBase64;
         delFile.deleteFiles(params.icon.path);
         return await new Category(_params);
-    }
+    },
+    delete: async (params) => {
+        return await Category.deleteMany(params)
+    },
 }
