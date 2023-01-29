@@ -5,5 +5,5 @@ module.exports = ((app,router) => {
     router.post('/registerUser', Users.registerUser)
     router.post('/getUsers', Middleware.verifyToken, Users.getUsers)
     router.delete('/deleteUserByUsername', Middleware.verifyToken, Users.deleteUserByUsername)
-    app.use("/api/Users", router);
+    app.use("/api/user", router);
 })
