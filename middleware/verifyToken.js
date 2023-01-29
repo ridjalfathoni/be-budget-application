@@ -1,4 +1,6 @@
 const jwt = require("jsonwebtoken");
+const mongoose = require('mongoose')
+const ObjectId = mongoose.Types.ObjectId;
 
 module.exports = {
     verifyToken(req,res,next) {
@@ -11,7 +13,11 @@ module.exports = {
             if (err) {
                 return res.sendStatus(403);
             }
-            req.username = decoded.username;
+            
+            req.users = {
+                user_id: ObjectId(decoded.user_id),
+                username: decoded.uname
+            };
             next();
         })
     }
