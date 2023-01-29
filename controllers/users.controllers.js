@@ -1,5 +1,5 @@
-const db = require('../models');
-const Users = db.users;
+const userService = require('../services/users.services');
+
 module.exports = {
     test(req, res) {
         res.status(200).send({
@@ -7,13 +7,12 @@ module.exports = {
         })
     },
     registerUser: async (req, res) => {
-        const { username, password, name } = req.body;
-        const user = new Users({
-            username: username == undefined ? username : username.toLowerCase(),
-            password: password,
-            name: name
-        });
         try {
+            const params = {
+                ...req.body,
+                username: req.body.username?.toLowerCase()
+            }
+            const user = await userService.create(params)
             await user.save();
             res.status(200).json({
                 message: `User Berhasil Ditambahkan`,
