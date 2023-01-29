@@ -4,13 +4,13 @@ module.exports = {
     async login(req, res) {
         try {
             let login = await authService.login(req.body)
-            res.status(200).send({
+            return res.status(200).send({
                 message: "Login Berhasil!",
                 status: 'success',
                 data: login
             })
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 message: error,
                 status: 'error'
             })
@@ -38,13 +38,13 @@ module.exports = {
                     expiresIn: '20s'
                 });
                 
-                res.status(200).send({
+                return res.status(200).send({
                     accessToken: accessToken,
                 })
             })
 
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 message: error,
                 status: 'error'
             })

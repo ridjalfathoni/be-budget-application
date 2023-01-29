@@ -9,13 +9,13 @@ module.exports = {
             }
             const wallet = await walletService.create(params)
             await wallet.save();
-            res.status(200).json({
+            return res.status(200).json({
                 message: 'Wallet berhasil dibuat.',
                 status: 'success',
             })
         } catch (error) {
              
-            res.status(500).json({
+            return res.status(500).json({
                 message: error
             })
         }
@@ -24,11 +24,11 @@ module.exports = {
         try {
             const _data = await walletService.get(req.users);
 
-            res.status(200).json({
+            return res.status(200).json({
                 result: _data
             })
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 message: error,
                 status: "error"
             })
@@ -43,12 +43,12 @@ module.exports = {
             }
             await walletService.delete(params);
             
-            res.status(200).send({
+            return res.status(200).send({
                 message: "Wallet berhasil dihapus."
             })
         } catch (error) {
             console.log("error", error);
-            res.status(500).json({
+            return res.status(500).json({
                 message: error,
                 status: "error"
             })   
@@ -65,13 +65,13 @@ module.exports = {
                 }
             }
             const _data = await walletService.update(params);
-            res.status(200).json({
+            return res.status(200).json({
                 message: "Wallet berhasil diupdate.",
                 data: _data,
                 status: "success"
             })
         } catch (error) {
-            res.status(500).json({
+            return res.status(500).json({
                 message: error,
                 status: "error"
             })
