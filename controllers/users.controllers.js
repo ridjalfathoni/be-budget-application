@@ -35,45 +35,62 @@ module.exports = {
     },
     getUsers: async (req, res) => {
         try {
-            const filter = req.body;
-            const _data = await Users.aggregate([
-                {
-                    $project: {
-                        _id: 0,
-                        username: 1
-                    }
-                },
-                {
-                    $match: filter
-                }
-            ])
-
-            res.status(200).send({
+            const _data = await userService.get(req.users)
+            return res.status(200).send({
                 result: _data
             })
         } catch (error) {
-            console.log(error);
+            return res.status(500).json({
+                message: error
+            })
         }
     },
     deleteUserByUsername: async(req,res) => {
-        const data = req.body;
-        if (!data.username) {
-            res.status(400).json({
-                type: 'ERROR',
-                message: 'Tidak ada data yang dihapus'
-            });
-        }
         try {
-            await Users.deleteMany({username:{$in:data}})
-            const users = await Users.find().populate('role', 'role');
-            res.status(200).send({
-                message: "User Berhasil dihapus",
+            if (!req.body.username) {
+                return res.status(400).json({
+                    message: "User not found."
+                })
+            }
+            const params = {
+                username: {
+                    $in: req.body.username
+                }
+            }
+            await userService.delete(params)
+            return res.status(200).send({
+                message: "User deleted successfully.",
             })
         } catch (error) {
-            res.status(400).json({
-                type: 'ERROR',
-                message: `User '${data.username}' tidak ada`
-            });
+            return res.status(500).json({
+                message: error
+            })
         }
     },
+    updateUser: async (req, res) => {
+        try {
+            if (!req.body.username) {
+                return res.status(400).json({
+                    message: "User not found."
+                })
+            }
+            const params = {
+                filter: {
+                    username: req.body.username
+                },
+                data: {
+                    ...req.body
+                }
+            }
+            const user = await userService.update(params)
+            return res.status(200).send({
+                message: "User updated successfully.",
+                data: user
+            })
+        } catch (error) {
+            return res.status(500).json({
+                message: error
+            })
+        }
+    }
 }
