@@ -1,35 +1,18 @@
-const db = require('../models');
-const Users = db.users;
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const authService = require('../services/auth.services');
 
 module.exports = {
     async login(req, res) {
-        const {username, password} = req.body;
         try {
-            let user = await Users.findOne({username: username})
-            
-            const match = await bcrypt.compare(password, user.password);
-            if(!match) return res.status(400).send({message: "Password Salah!"});
-            
-            const uname = user.username;
-            const accessToken = jwt.sign({uname}, process.env.ACCESS_TOKEN_SECRET, {
-                expiresIn: '20s'
-            });
-
-            const refreshToken = jwt.sign({uname}, process.env.REFRESH_TOKEN_SECRET, {
-                expiresIn: '1d'
-            });
-            await Users.findOneAndUpdate({username: user.username}, {refreshToken: refreshToken})
-            
+            let login = await authService.login(req.body)
             res.status(200).send({
                 message: "Login Berhasil!",
-                accessToken: accessToken,
-                refreshToken: refreshToken
+                status: 'success',
+                data: login
             })
         } catch (error) {
-            res.status(400).send({
-                message: `Username / Email Tidak Ditemukan!`
+            res.status(500).json({
+                message: error,
+                status: 'error'
             })
         }
     },
@@ -61,6 +44,10 @@ module.exports = {
             })
 
         } catch (error) {
+            res.status(500).json({
+                message: error,
+                status: 'error'
+            })
         }
     },
 }
