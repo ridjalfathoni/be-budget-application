@@ -19,5 +19,19 @@ module.exports = {
                 message: error
             })
         }
+    },
+    getListWallet: async (req,res) => {
+        try {
+            const _data = await walletService.get(req.users);
+
+            res.status(200).json({
+                result: _data
+            })
+        } catch (error) {
+            res.status(500).json({
+                message: error,
+                status: "error"
+            })
+        }
     }
 }
