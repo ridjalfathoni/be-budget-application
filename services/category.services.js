@@ -2,8 +2,52 @@ const db = require('../models');
 const fs = require('fs');
 const delFile = require('../utils/deleteFiles');
 const Category = db.category;
+const Users = db.users;
 
 module.exports = {
+    get: async (params) => {
+        return await Category.aggregate([
+            {
+                $addFields: {
+                    user_id: {
+                        $ifNull: ['$user_id', params.user_id]
+                    }
+                }
+            },
+            {
+                $lookup: {
+                    from: Users.collection.name,
+                    localField: "user_id",
+                    foreignField: "_id",
+                    as: "user",
+                    pipeline: [
+                        {
+                            $project: {
+                                _id: 0,
+                                username: 1
+                            }
+                        }
+                    ]
+                }
+            },
+            {
+                $set: {
+                    username: {
+                        $arrayElemAt: ["$user.username", 0]
+                    }
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    user_id: 1,
+                    name: 1,
+                    icon: 1,
+                    type: 1
+                }
+            }
+        ])
+    },
     create: async (params) => {
         let _params = {
             ...params

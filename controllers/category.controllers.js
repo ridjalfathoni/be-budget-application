@@ -26,5 +26,20 @@ module.exports = {
                 message: error
             })
         }
+    },
+    getAllCategory: async (req, res) => {
+        try {
+            const params = {
+                ...req.users
+            }
+            const _data = await categoryService.get(params);
+            return res.status(200).send({
+                result: _data
+            })
+        } catch (error) {
+            return res.status(500).json({
+                message:error
+            })
+        }
     }
 }
