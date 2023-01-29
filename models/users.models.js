@@ -5,19 +5,15 @@ module.exports = (mongoose) => {
         username: {
             type: String,
             unique: true,
-            required: [true, 'Username tidak boleh kosong']
+            required: [true, 'Username tidak boleh kosong.']
         },
         password: {
             type: String,
-            required: [true, 'Password tidak boleh kosong']
+            required: [true, 'Password tidak boleh kosong.']
         },
         name: { 
             type: String,
             required: true
-        },
-        balance: {
-            type: Number,
-            default: 0
         },
         refreshToken: {
             type: String
