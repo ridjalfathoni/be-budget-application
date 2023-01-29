@@ -16,7 +16,7 @@ module.exports = {
             await user.save();
             res.status(200).json({
                 message: `User Berhasil Ditambahkan`,
-                type: 'SUCCESS',
+                status: 'success',
             })
         } catch (error) {
             const usernameError = error.errors?.username?.message
@@ -49,7 +49,7 @@ module.exports = {
         try {
             if (!req.body.username) {
                 return res.status(400).json({
-                    message: "User not found."
+                    message: "User tidak ditemukan."
                 })
             }
             const params = {
@@ -59,7 +59,8 @@ module.exports = {
             }
             await userService.delete(params)
             return res.status(200).send({
-                message: "User deleted successfully.",
+                message: "User berhasil dihapus.",
+                status: 'success'
             })
         } catch (error) {
             return res.status(500).json({
@@ -71,7 +72,8 @@ module.exports = {
         try {
             if (!req.body.username) {
                 return res.status(400).json({
-                    message: "User not found."
+                    message: "User tidak ditemukan.",
+                    status: 'error'
                 })
             }
             const params = {
@@ -84,7 +86,8 @@ module.exports = {
             }
             const user = await userService.update(params)
             return res.status(200).send({
-                message: "User updated successfully.",
+                message: "User berhasil diupdate.",
+                status: 'success',
                 data: user
             })
         } catch (error) {
