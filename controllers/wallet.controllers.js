@@ -53,5 +53,28 @@ module.exports = {
                 status: "error"
             })   
         }
+    },
+    updateWalletByID: async(req,res) => {
+        try {
+            const params = {
+                filter: {
+                    _id: req.body.id
+                },
+                data: {
+                    ...req.body
+                }
+            }
+            const _data = await walletService.update(params);
+            res.status(200).json({
+                message: "Wallet berhasil diupdate.",
+                data: _data,
+                status: "success"
+            })
+        } catch (error) {
+            res.status(500).json({
+                message: error,
+                status: "error"
+            })
+        }
     }
 }
