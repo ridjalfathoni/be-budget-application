@@ -3,19 +3,21 @@ module.exports = (mongoose) => {
         user_id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Users',
-            required: [true, 'Username tidak boleh kosong']
+            required: [true, 'Username tidak boleh kosong.']
+        },
+        wallet_id: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Wallet',
+            required: [true, 'Wallet tidak boleh kosong.']
         },
         amount: {
             type: Number,
-            required: [true, 'Amount tidak boleh kosong']
-        },
-        type: {
-            type: String,
-            required: true,
-            enum: ["income", "expense"]
+            required: [true, 'Amount tidak boleh kosong.']
         },
         category: {
-            type: String
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Category',
+            required: [true, "Category tidak boleh kosong."]
         },
         description: {
             type: String
