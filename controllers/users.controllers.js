@@ -19,19 +19,18 @@ module.exports = {
                 type: 'SUCCESS',
             })
         } catch (error) {
-            const keyValue = error.keyValue;
+            const usernameError = error.errors?.username?.message
+            const passwordError = error.errors?.password?.message
+
             if (error.name === 'ValidationError') {
-                res.status(400).json({
-                    type: 'ERROR',
-                    message: error.message.replace(/Users validation failed: /, "")
+                return res.status(400).json({
+                    status: 'error',
+                    message: usernameError || passwordError
                 });
-            } else {
-                const key = Object.keys(keyValue);
-                res.status(400).json({
-                    type: 'ERROR',
-                    message: `${key} ${keyValue[key]} Sudah Ada`
-                })
             }
+            return res.status(500).json({
+                message: error
+            })
         }
     },
     getUsers: async (req, res) => {
