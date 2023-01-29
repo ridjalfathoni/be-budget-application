@@ -60,5 +60,30 @@ module.exports = {
                 status: "error"
             })
         }
+    },
+    updateCategory: async(req,res) => {
+        try {
+            const file = req.file;
+            const params = {
+                filter: {
+                    _id: req.body.id
+                },
+                data: {
+                    ...req.body,
+                    icon: file,
+                }
+            }
+            const category = await categoryService.update(params)
+            return res.status(200).send({
+                message: "Category berhasil diupdate.",
+                data: category,
+                status: "success"
+            })
+        } catch (error) {
+            return res.status(500).json({
+                message: error,
+                status: "error"
+            })
+        }
     }
 }

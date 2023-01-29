@@ -65,4 +65,12 @@ module.exports = {
     delete: async (params) => {
         return await Category.deleteMany(params)
     },
+    update: async (params) => {
+        const iconPath = params.data?.icon?.path;
+        const iconBuffer = fs.readFileSync(iconPath);
+        const iconBase64 = Buffer.from(iconBuffer).toString('base64');
+        params.data.icon = iconBase64;
+        delFile.deleteFiles(iconPath);
+        return await Category.findOneAndUpdate(params.filter, params.data, {new:true})
+    }
 }
