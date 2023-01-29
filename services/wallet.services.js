@@ -1,5 +1,6 @@
 const db = require('../models');
 const Wallet = db.wallet;
+const Users = db.users;
 
 module.exports = {
     get: async (params) => {
@@ -31,7 +32,6 @@ module.exports = {
             {
                 $project: {
                     _id: 1,
-                    username: 1,
                     name: 1,
                     balance: 1
                 }
