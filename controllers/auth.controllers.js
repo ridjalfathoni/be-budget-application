@@ -16,33 +16,18 @@ module.exports = {
             })
         }
     },
-    async refreshToken(req,res) {
+    async refreshToken(req, res) {
         try {
             const { refreshToken } = req.body;
+
             if (!refreshToken) {
                 return res.sendStatus(401);
             }
+            let token = await authService.refreshToken(req.body);
 
-            const user = await Users.findOne({refreshToken: refreshToken})
-            if (!user) {
-                return res.sendStatus(403);
-            }
-
-            jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
-                if (err) {
-                    return res.sendStatus(403);
-                }
-
-                const uname = user.username;
-                const accessToken = jwt.sign({uname}, process.env.ACCESS_TOKEN_SECRET, {
-                    expiresIn: '20s'
-                });
-                
-                return res.status(200).send({
-                    accessToken: accessToken,
-                })
+            return res.status(200).send({
+                ...token
             })
-
         } catch (error) {
             return res.status(500).json({
                 message: error,

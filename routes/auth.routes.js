@@ -5,5 +5,5 @@ module.exports = ((app,router) => {
     router.post('/login', Auth.login);
     router.post('/refreshToken', Auth.refreshToken);
 
-    app.use("/api/Auth", router);
+    app.use("/api/auth", router);
 })
