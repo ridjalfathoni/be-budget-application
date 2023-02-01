@@ -3,7 +3,8 @@ const categoryService = require('../services/category.services');
 module.exports = {
     addCategory: async (req, res) => {
         try {
-            const file = req.file;
+            const file = req.file ? req.file : req.body.icon;
+            
             if (!file) {
                 return res.status(400).json({
                     message: "Icon tidak boleh kosong"
@@ -63,7 +64,7 @@ module.exports = {
     },
     updateCategory: async(req,res) => {
         try {
-            const file = req.file;
+            const file = req.file ? req.file : req.body.icon;
             const params = {
                 filter: {
                     _id: req.body.id

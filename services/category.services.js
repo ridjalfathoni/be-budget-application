@@ -57,7 +57,7 @@ module.exports = {
         }
         const iconPath = params.icon?.path;
         const iconBuffer = fs.readFileSync(iconPath);
-        const iconBase64 =  Buffer.from(iconBuffer).toString('base64');
+        const iconBase64 = Buffer.from(iconBuffer).toString('base64');
         _params.icon = iconBase64;
         delFile.deleteFiles(params.icon.path);
         return await new Category(_params);
@@ -66,11 +66,14 @@ module.exports = {
         return await Category.deleteMany(params)
     },
     update: async (params) => {
-        const iconPath = params.data?.icon?.path;
-        const iconBuffer = fs.readFileSync(iconPath);
-        const iconBase64 = Buffer.from(iconBuffer).toString('base64');
-        params.data.icon = iconBase64;
-        delFile.deleteFiles(iconPath);
-        return await Category.findOneAndUpdate(params.filter, params.data, {new:true})
+        if (params.data.icon.path) {
+            const iconPath = params.data?.icon?.path;
+            const iconBuffer = fs.readFileSync(iconPath);
+            const iconBase64 = Buffer.from(iconBuffer).toString('base64');
+            params.data.icon = iconBase64;
+            delFile.deleteFiles(iconPath);
+        } 
+
+        return await Category.findOneAndUpdate(params.filter, params.data, { new: true })
     }
 }
