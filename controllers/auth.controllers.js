@@ -24,7 +24,7 @@ module.exports = {
                 return res.sendStatus(401);
             }
             let token = await authService.refreshToken(req.body);
-
+            
             return res.status(200).send({
                 ...token
             })

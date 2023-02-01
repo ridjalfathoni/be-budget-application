@@ -41,13 +41,12 @@ module.exports = {
                     $in: req.body.id
                 }
             }
-            await walletService.delete(params);
+            let aa = await walletService.delete(params);
             
             return res.status(200).send({
                 message: "Wallet berhasil dihapus."
             })
         } catch (error) {
-            console.log("error", error);
             return res.status(500).json({
                 message: error,
                 status: "error"

@@ -47,7 +47,7 @@ module.exports = {
 
         let accessToken = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
             if (err) {
-                console.log("error", err);
+                throw new Error("JWT Expired")
             }
 
             const user_id = decoded?.user_id;
