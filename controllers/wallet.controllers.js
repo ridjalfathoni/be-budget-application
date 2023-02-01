@@ -41,8 +41,8 @@ module.exports = {
                     $in: req.body.id
                 }
             }
-            let aa = await walletService.delete(params);
-            
+            await walletService.delete(params);
+
             return res.status(200).send({
                 message: "Wallet berhasil dihapus."
             })
